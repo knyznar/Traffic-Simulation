@@ -1,25 +1,21 @@
-import java.util.Random;
-
 public class Car {
-    int x ,y;
-    int id;
-    int v_init;
-    int dest;
 
+    private int v_max, v_current;
 
-    Car(int car_id) {
-        id = car_id;
-        Random random= new Random();
-        v_init = random.nextInt(3) + 4;
-        //this.x = x;
-        //this.y = y;
+    Car(int v) {
+        v_max = v;
+        v_current = 0;
     }
 
-    /*public void move(int id) {
-            x += v_init;
-    }*/
+    void setV_current(int v) {
+        v_current = v;
+    }
 
+    public int getV_current() {
+        return v_current;
+    }
 
-
+    public int getV_max() {
+        return v_max;
+    }
 }
-

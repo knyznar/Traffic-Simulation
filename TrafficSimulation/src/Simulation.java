@@ -1,36 +1,33 @@
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Simulation {
 
     public static void main(String[] args) throws Exception{
         Road road = new Road();
+        Random random_seed = new Random();
 
         while(true) {
-            for (int i = 0; i < Consts.WIDTH; ++i) {
-                for (int j = 0; j < Consts.LENGTH; ++j) {
-                    if (0 == i || Consts.WIDTH-1 == i)
-                        System.out.print("-");
-                    else if (road.map[i][j] >= 0)
-                        System.out.print("X");
-                    else
-                        System.out.print(" ");
-
-                }
-                System.out.println();
+            for(int i = 0; i < road.left_lane.size(); ++i) {
+                if(road.left_lane.get(i) != null)
+                    System.out.print("X(" + road.left_lane.get(i).getV_current() + ")");
+                else
+                    System.out.print("____");
             }
+            System.out.println();
+
             TimeUnit.SECONDS.sleep(1);
-            System.out.println("\n\n\n");
+            System.out.println("\n\n\n\n");
 
-            int id = road.is_new_car();
-            if ( id >= 0 ) {
-                Car car = new Car(id);
-
-                int line = road.random_line() + 1;
-                road.map[line][0] = id;
-                road.cars.add(car);
+            boolean gen_car = random_seed.nextBoolean();
+            if(gen_car) {
+                int v_max = random_seed.nextInt(3) + 4;
+                road.generate_car(v_max);
             }
-            //for (Car c : road.cars)
             road.move_cars();
+
         }
+
+
     }
 }
