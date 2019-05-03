@@ -1,45 +1,55 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Road {
-    ArrayList<Car> left_lane = new ArrayList<>();
-    ArrayList<Car> right_lane = new ArrayList<>();
+    ArrayList<Car> first_lane = new ArrayList<>();
+    ArrayList<Car> second_lane = new ArrayList<>();
+    ArrayList<Car> third_lane = new ArrayList<>();
 
     Road() {
         for(int i=0; i<100; ++i) {
-            left_lane.add(null);
-            right_lane.add(null);
+            first_lane.add(null);
+            second_lane.add(null);
+            third_lane.add(null);
         }
     }
-
-    void generate_car(int v) {
+    ;
+    void generate_car(int v, ArrayList<Car> lane) {
         Car car = new Car(v);
-        left_lane.set(0, car);
+        lane.set(0, car);
     }
 
-    void move_cars() {
-        loop:
-        for(int i=left_lane.size()-1; i>=0; --i) {
+    void move_cars(ArrayList<Car> lane) {
+        Random random_seed = new Random();
 
-            if(left_lane.get(i) != null) {
-                Car current_car = left_lane.get(i);
+        loop:
+        for(int i=lane.size()-1; i>=0; --i) {
+
+            if(lane.get(i) != null) {
+                Car current_car = lane.get(i);
 
                 if(current_car.getV_current()+1 <= current_car.getV_max())    // acceleration
                     current_car.setV_current(current_car.getV_current()+1);
 
-                if(i + current_car.getV_current() >= left_lane.size()) {     // car meets end of list
-                    left_lane.set(i, null);
+                if(i + current_car.getV_current() >= lane.size()) {     // car meets end of list
+                    lane.set(i, null);
                     continue loop;
                 }
 
                 for(int j = 1; j <= current_car.getV_current(); ++j) {       // check safety distance from other cars
-                    if (left_lane.get(i+j) != null) {
-                        current_car.setV_current(j - 1);
+                    if (lane.get(i+j) != null) {
+                        current_car.setV_current(Math.max(0, j - 2));
                         break;
                     }
                 }
 
-                left_lane.set(i + current_car.getV_current(), current_car);     // move car
-                left_lane.set(i, null);
+                boolean rand_slow = random_seed.nextInt(10)==0;          // randomly reduce velocity by 1 (probability p = 1/10)
+                if(rand_slow)
+                    current_car.setV_current(current_car.getV_current()-1);
+
+
+                lane.set(i + current_car.getV_current(), current_car);     // move car
+                lane.set(i, null);
             }
         }
     }
