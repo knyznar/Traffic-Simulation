@@ -1,4 +1,4 @@
-public class Car {
+class Car {
 
     private int v_max, v_current;
 
@@ -11,11 +11,11 @@ public class Car {
         v_current = v;
     }
 
-    public int getV_current() {
+    int getV_current() {
         return v_current;
     }
 
-    public int getV_max() {
+    int getV_max() {
         return v_max;
     }
 }
