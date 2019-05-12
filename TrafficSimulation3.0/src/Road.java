@@ -87,7 +87,9 @@ class Road {
             if (position + i < lane.size() && lane.get(position+i) != null) {
                 //car.setV_current(Math.max(0, i - 2));
                 if (lane.get(position+i).getV_current() >= lane.size()) break;
-                car.setV_current(lane.get(position+i).getV_current());
+
+                if (lane.get(position+i).getV_current() < car.getV_current())
+                        car.setV_current(lane.get(position+i).getV_current());
 
                 lane.set(position+i - 2, car);     // move car
                 lane.set(position, null);
@@ -101,7 +103,7 @@ class Road {
             car.setV_current(car.getV_current()-1);
 
         boolean rand_acc = random_seed.nextInt(10)==0;          // randomly increase velocity by 1 (probability p = 1/10)
-        if(car.getV_current() == car.getV_max() && rand_acc && position + car.getV_current() < lane.size() )
+        if(rand_acc && car.getV_current() >= car.getV_max() && position + car.getV_current()+1 < lane.size() )
             car.setV_current(car.getV_current()+1);
 
         lane.set(position + car.getV_current(), car);     // move car
