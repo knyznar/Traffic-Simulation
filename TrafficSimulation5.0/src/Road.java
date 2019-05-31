@@ -60,19 +60,19 @@ class Road {
                 //first_lane.set(80, new Car(v_max,generate_dest()));
             }
 
-            if (first_lane_back.get(lights_on[i]-2) == null && random_seed.nextInt(probability) == 0 ) {//?
+            if (first_lane_back.get(lights_on[i]) == null && random_seed.nextInt(probability) == 0 ) {//?
                 int v_max = random_seed.nextInt(3) + 4;
-                first_lane_back.set(lights_on[i]-2, new Car(v_max, generate_dest()));
+                first_lane_back.set(lights_on[i], new Car(v_max, generate_dest()));
                 //first_lane.set(80, new Car(v_max,generate_dest()));
             }
-            if (second_lane_back.get(lights_on[i]-2) == null && random_seed.nextInt(probability) == 0 ) {//?
+            if (second_lane_back.get(lights_on[i]) == null && random_seed.nextInt(probability) == 0 ) {//?
                 int v_max = random_seed.nextInt(3) + 4;
-                second_lane_back.set(lights_on[i]-2, new Car(v_max, generate_dest()));
+                second_lane_back.set(lights_on[i], new Car(v_max, generate_dest()));
                 //first_lane.set(80, new Car(v_max,generate_dest()));
             }
-            if (third_lane_back.get(lights_on[i]-2) == null && random_seed.nextInt(probability) == 0 ) {//?
+            if (third_lane_back.get(lights_on[i]) == null && random_seed.nextInt(probability) == 0 ) {//?
                 int v_max = random_seed.nextInt(3) + 4;
-                third_lane_back.set(lights_on[i]-2, new Car(v_max, generate_dest()));
+                third_lane_back.set(lights_on[i], new Car(v_max, generate_dest()));
                 //first_lane.set(80, new Car(v_max,generate_dest()));
             }
             //if (random_seed.nextBoolean()) {
@@ -164,11 +164,14 @@ class Road {
                 for (int k = 1; k <= car.getV_current() + 2; ++k) {   //safety distance
                     if (position - k < 0) {
                         temp = k;
-                        k = k - current_lane.size();    //return false;
+                        k = k - current_lane.size();
                     }
                     if (other_lane.get(position - k) != null) {
                         if (other_lane.get(position - k).getV_current() < car.getV_current())
                             car.setV_current(other_lane.get(position - k).getV_current());
+                        if (position - k + 2 >= other_lane.size()) {
+                            k = k +other_lane.size();
+                        }
 
                         other_lane.set(position - k + 2, car);     // move car
                         current_lane.set(position, null);
@@ -179,7 +182,9 @@ class Road {
                 }
 
                 //System.out.println("zmianaa pasa na lewy: " + 5*position );
-                other_lane.set(position + car.getV_current(), car);     // move car
+                if (position - car.getV_current() < 0) position = position + other_lane.size();
+                other_lane.set(position - car.getV_current(), car);     // move car
+                if (position >= other_lane.size()) position = position - other_lane.size();
                 current_lane.set(position, null);
                 return true;
             }
@@ -262,7 +267,9 @@ class Road {
                     if (other_lane.get(position - k) != null) {
                         if (other_lane.get(position - k).getV_current() < car.getV_current())
                             car.setV_current(other_lane.get(position - k).getV_current());
-
+                        if (position - k + 2 >= other_lane.size()) {
+                            k = k +other_lane.size();
+                        }
                         other_lane.set(position - k + 2, car);     // move car
                         current_lane.set(position, null);
                         //System.out.println("zmiana pasa na prawy: " + 5*position );
@@ -272,7 +279,9 @@ class Road {
                 }
 
                 //System.out.println("zmianaa pasa na prawy: " + 5*position );
-                other_lane.set(position + car.getV_current(), car);     // move car
+                if (position - car.getV_current() < 0) position = position + other_lane.size();
+                other_lane.set(position - car.getV_current(), car);     // move car
+                if (position >= other_lane.size()) position = position - other_lane.size();
                 current_lane.set(position, null);
                 return true;
             }
@@ -389,7 +398,7 @@ class Road {
             if (position + car.getV_current() >= lane.size()) {
                 int new_position = position + car.getV_current() - lane.size();
                 lane.set(new_position, car);
-                System.out.println("Koniec pasaa, newpos:" + new_position);
+                //System.out.println("Koniec pasaa, newpos:" + new_position);
             } else lane.set(position + car.getV_current(), car);     // move car
             if (0 != car.getV_current()) lane.set(position, null);
         }
@@ -429,7 +438,7 @@ class Road {
                 if (car.getV_current() > 0) car.setV_current(car.getV_current() - 1);
                 //System.out.println("Czerwone lewe");
             } else if (car.getV_current() + 1 <= car.getV_max()) {    // acceleration
-                System.out.println("acceleration "+car.getV_current());
+                //System.out.println("acceleration "+car.getV_current());
                 car.setV_current(car.getV_current() + 1);
             }
 
@@ -475,7 +484,7 @@ class Road {
                     //while (position - i + 2 >= lane.size()) --i;   //nie bardzo xd
 
                     if (position - i + 2 >= lane.size()) i = temp;
-                    System.out.println("i = "+i+" pos= "+position);
+                    //System.out.println("i = "+i+" pos= "+position);
                     lane.set(position - i + 2, car);
                     lane.set(position, null);
                     return;
@@ -504,9 +513,10 @@ class Road {
                 //System.out.println("Koniec pasaa, newpos:" + new_position);
             } else {
                 lane.set(position - car.getV_current(), car);     // move car
-                System.out.println("Car moved "+ position + " " +car.getV_current());
+                //System.out.println("Car moved "+ position + " " +car.getV_current());
             }
-            if (0 != car.getV_current()) {System.out.println("move! " + position+ " " + car.getV_current());lane.set(position, null);}
+            if (0 != car.getV_current()) {//System.out.println("move! " + position+ " " + car.getV_current());
+            lane.set(position, null);}
         }
     }
 
